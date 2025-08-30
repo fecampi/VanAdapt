@@ -2,6 +2,8 @@
 
 VanAdapt é uma biblioteca de componentes flexível e adaptável, projetada para oferecer suporte a diferentes dispositivos e modos de renderização, como Canvas, HTML e outros sistemas nativos. Com o VanAdapt, você pode criar interfaces de usuário modernas e responsivas que funcionam perfeitamente em qualquer ambiente.
 
+> **Inspirado e baseado nos frameworks estudados e utilizados, como [Konva](https://konvajs.org/), [React](https://react.dev/), [PixiJS](https://pixijs.com/), [VanJS](https://vanjs.org/) e outros.**
+
 ## Objetivo
 
 O objetivo do VanAdapt é fornecer uma solução unificada para o desenvolvimento de componentes reutilizáveis, permitindo que desenvolvedores escolham o modo de renderização mais adequado às suas necessidades, sem comprometer a experiência do usuário.

@@ -4,11 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "dev:canvas": "vite --mode canvas",
-    "dev:html": "vite --mode html",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+  "dev": "vite",
+  "dev:canvas": "vite --mode canvas",
+  "dev:html": "vite --mode html",
+  "build": "tsc && vite build",
+  "build:canvas": "tsc && vite build --mode canvas",
+  "build:html": "tsc && vite build --mode html",
+  "preview": "vite preview"
   },
   "devDependencies": {
     "typescript": "~5.8.3",

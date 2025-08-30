@@ -2,7 +2,7 @@ import van from "vanjs-core";
 const { tags } = van;
 const { button } = tags;
 
-export default class HtmlButton {
+export default class ButtonHtml {
   constructor({
     text,
     onClick,

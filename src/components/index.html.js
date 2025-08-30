@@ -1,8 +1,13 @@
-import HtmlButton from "./html/HtmlButton.js";
+import van from "vanjs-core";
+const { tags } = van;
+import ButtonHtml from "./html/ButtonHtml.js";
 
-export function Button(props) {
-  const buttonInstance = new HtmlButton(props);
-  return buttonInstance.render();
-}
+const create =
+  (C) =>
+  (...args) =>
+    new C(...args).render();
 
-export * from "./html";
+export const Button = create(ButtonHtml);
+
+
+export const View = (...args) => tags.div(...args);

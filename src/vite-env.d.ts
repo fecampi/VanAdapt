@@ -1,3 +1,4 @@
+declare module "*.jsx";
 /// <reference types="vite/client" />
 
 declare module "./App" {
