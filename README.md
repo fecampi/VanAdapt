@@ -1,61 +1,61 @@
 # VanAdapt
 
-VanAdapt é uma biblioteca de componentes flexível e adaptável, projetada para oferecer suporte a diferentes dispositivos e modos de renderização, como Canvas, HTML e outros sistemas nativos. Com o VanAdapt, você pode criar interfaces de usuário modernas e responsivas que funcionam perfeitamente em qualquer ambiente.
+VanAdapt é um experimento simples para testar diferentes formas de renderização de interfaces: HTML e Canvas.
 
-> **Inspirado e baseado nos frameworks estudados e utilizados, como [Konva](https://konvajs.org/), [React](https://react.dev/), [PixiJS](https://pixijs.com/), [VanJS](https://vanjs.org/) e outros.**
+> **Inspirado e baseado nos frameworks [VanJS](https://vanjs.org/), [Konva](https://konvajs.org/) e outros.**
 
 ## Objetivo
 
-O objetivo do VanAdapt é fornecer uma solução unificada para o desenvolvimento de componentes reutilizáveis, permitindo que desenvolvedores escolham o modo de renderização mais adequado às suas necessidades, sem comprometer a experiência do usuário.
+Este é um projeto experimental para comparar performance e comportamento entre renderização HTML tradicional e Canvas, usando uma API simples e consistente.
 
-## Funcionalidades
+## O que faz
 
-- **Compatibilidade com Canvas e HTML**: Escolha o modo de renderização ideal para seu projeto.
-- **Componentes Modulares**: Crie e reutilize componentes de forma eficiente.
-- **Desempenho Otimizado**: Build específico para cada modo, eliminando código desnecessário.
+- **Renderização HTML**: Usa DOM tradicional com VanJS
+- **Renderização Canvas**: Desenha elementos diretamente no canvas
+- **API Unificada**: Mesma sintaxe para ambos os modos
+- **Estado Reativo**: Sistema simples de estado que funciona em ambos
 
 ## Como Usar
 
-1. Instale as dependências do projeto:
+1. Instale as dependências:
    ```bash
    npm install
    ```
 
-2. Para desenvolver no modo Canvas:
+2. Para testar no modo Canvas:
    ```bash
    npm run dev:canvas
    ```
 
-3. Para desenvolver no modo HTML:
+3. Para testar no modo HTML:
    ```bash
    npm run dev:html
    ```
 
-4. Para gerar builds otimizados:
-   ```bash
-   npm run build
-   ```
+## Exemplo
 
-## Tecnologias Utilizadas
+```javascript
+// Mesmo código funciona em HTML e Canvas
+import { Button, View, state } from "components";
 
-- **VanJS**: Framework leve para criação de interfaces reativas.
-- **Vite**: Ferramenta de build rápida e moderna.
-- **TypeScript**: Para maior segurança e escalabilidade no desenvolvimento.
+const contador = state(0);
 
-## Vantagens do Build Otimizado
+const app = View(
+  { width: 500, height: 300 },
+  Button({
+    text: contador,
+    onClick: () => contador.val++,
+    x: 50, y: 50
+  })
+);
+```
 
-O VanAdapt gera arquivos otimizados, incluindo apenas os componentes necessários para o modo escolhido (Canvas, HTML ou outros). Isso reduz o tamanho do bundle e melhora o desempenho, já que a escolha do modo é feita no build, não em tempo de execução.
+## Tecnologias
 
-## Diferencial: Sem Dependência do DOM
-
-Ao contrário de frameworks como React, o VanAdapt não depende do DOM para renderizar componentes. Isso traz benefícios significativos:
-
-- **Desempenho Superior**: Reduz a sobrecarga causada pela manipulação do DOM, especialmente em dispositivos com recursos limitados.
-- **Flexibilidade**: Permite renderizar em diferentes ambientes, como Canvas ou sistemas nativos, sem restrições do DOM.
-- **Menor Tamanho**: Elimina dependências desnecessárias, resultando em bundles mais leves.
-
-Essa abordagem torna o VanAdapt ideal para aplicações que exigem alta performance e compatibilidade com múltiplos dispositivos.
+- **VanJS**: Para reatividade e HTML
+- **Canvas API**: Para renderização gráfica
+- **Vite**: Build tool
 
 ---
 
-VanAdapt: Componentes que se adaptam ao seu mundo.
+VanAdapt: Um experimento simples de renderização.
