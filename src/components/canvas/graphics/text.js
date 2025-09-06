@@ -26,4 +26,29 @@ export default class Text {
     ctx.textBaseline = this.baseline;
     ctx.fillText(this.text, this.x, this.y);
   }
+
+  // Adiciona o método isInside para verificar se um ponto está dentro da área do texto
+  isInside(px, py) {
+    const metrics = this.getTextMetrics();
+    const width = metrics.width;
+    const height = parseInt(this.font, 10); // Aproximação da altura da fonte
+
+    let xStart = this.x;
+    if (this.align === 'center') xStart -= width / 2;
+    else if (this.align === 'right') xStart -= width;
+
+    let yStart = this.y;
+    if (this.baseline === 'middle') yStart -= height / 2;
+    else if (this.baseline === 'bottom') yStart -= height;
+
+    return px >= xStart && px <= xStart + width && py >= yStart && py <= yStart + height;
+  }
+
+  // Método auxiliar para obter as métricas do texto
+  getTextMetrics() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.font = this.font;
+    return ctx.measureText(this.text);
+  }
 }

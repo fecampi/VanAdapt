@@ -1,6 +1,7 @@
 
 import ViewCanvas from "./canvas/ViewCanvas.js"
 import Button2 from "./canvas/ButtonCanvas.js"
+import StateCanvas from "./canvas/State.js"
 
 export const View = (props, ...children) => {
   const viewCanvas = new ViewCanvas(props);
@@ -10,5 +11,9 @@ export const View = (props, ...children) => {
 
 export function Button(props = {}) {
   return new Button2(props);
+}
+
+export function state(props) {
+  return new StateCanvas(props);
 }
 

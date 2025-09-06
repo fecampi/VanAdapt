@@ -9,5 +9,6 @@ const create =
 
 export const Button = create(ButtonHtml);
 
-
 export const View = (...args) => tags.div(...args);
+
+export const state = (...args) => van.state(...args);
