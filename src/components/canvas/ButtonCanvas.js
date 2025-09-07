@@ -17,13 +17,11 @@ export default class ButtonCanvas {
     borderRadius = 0,
     ...props
   } = {}) {
-
-
     // Cria container do botão
-    this.container = new Container({ x, y });
-    
+    this.container = new Container({ x, y, width, height });
+
     // Cria retângulo do botão
-    const rect = new Rect({
+    this.rect = new Rect({
       x: 0,
       y: 0,
       width,
@@ -31,7 +29,7 @@ export default class ButtonCanvas {
       fill: backgroundColor,
       borderRadius,
     });
-    rect.cursor = "pointer";
+    this.rect.cursor = "pointer";
 
     // Cria texto do botão
     this.label = new Text({
@@ -52,18 +50,10 @@ export default class ButtonCanvas {
     }
 
     // Adiciona retângulo e texto ao container
-    this.container.add(rect);
+    this.container.add(this.rect);
     this.container.add(this.label);
-
     // Adiciona evento de clique
     this.container.onClick = onClick;
-
-    // Verifica se todos os filhos adicionados ao Container implementam isInside
-    this.container.children.forEach((child) => {
-      if (typeof child.isInside !== "function") {
-        console.error("Um filho do Container não implementa o método isInside:", child);
-      }
-    });
   }
 
   // Retorna o container pronto para ser adicionado a um Stage/Layer

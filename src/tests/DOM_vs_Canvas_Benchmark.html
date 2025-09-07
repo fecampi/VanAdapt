@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>DOM vs Canvas Benchmark</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h2 {
+      margin-top: 32px;
+      font-size: 2rem;
+      color: #222;
+    }
+    .benchmark-controls {
+      display: flex;
+      gap: 16px;
+      margin: 24px 0 16px 0;
+    }
+    button {
+      background: #0078d4;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    #perf-panel {
+      width: 480px;
+      margin: 0 0 24px 0;
+      padding: 18px 24px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      font-size: 1.1rem;
+      color: #333;
+    }
+    #dom-container {
+      position: relative;
+      width: 1080px;
+      height: 600px;
+      margin-bottom: 24px;
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    #dom-container div {
+      width: 5px; height: 5px; background: #e53935; position: absolute;
+      border-radius: 2px;
+    }
+    canvas {
+      display: block;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      margin-bottom: 24px;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    @media (max-width: 1200px) {
+      #dom-container, canvas {
+        width: 95vw;
+        max-width: 1080px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div style="position:relative;width:1920px;height:1080px;margin:0 auto;">
+    <div id="paint-area" style="width:1920px;height:1080px;position:absolute;top:0;left:0;z-index:1;"></div>
+    <div style="position:absolute;top:0;left:0;width:100%;z-index:2;display:flex;flex-direction:column;align-items:center;pointer-events:none;">
+      <h2 style="margin-top:32px;font-size:2rem;color:#222;pointer-events:auto;">DOM vs Canvas vs OffscreenCanvas Benchmark</h2>
+      <div class="benchmark-controls" style="pointer-events:auto;">
+        <button onclick="runDom()">Run DOM (10k divs)</button>
+        <button onclick="runCanvas()">Run Canvas (main thread)</button>
+        <button onclick="runWorker()">Run OffscreenCanvas (Worker)</button>
+      </div>
+      <div id="perf-panel" style="width:480px;margin:0 0 24px 0;padding:18px 24px;background:#fff;border-radius:8px;border:1px solid #e0e0e0;box-shadow:0 2px 12px rgba(0,0,0,0.06);font-size:1.1rem;color:#333;pointer-events:auto;">
+        <strong>Performance:</strong><br>
+        CPU cores available: <span id="cpu-count"></span><br>
+        DOM: <span id="perf-dom">-</span> ms<br>
+        Canvas: <span id="perf-canvas">-</span> ms<br>
+        OffscreenCanvas: <span id="perf-worker">-</span> ms
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Helper to clear paint area and create a canvas
+    function resetCanvas() {
+      const paintArea = document.getElementById("paint-area");
+      // Remove all children (DOM and canvas)
+      while (paintArea.firstChild) {
+        paintArea.removeChild(paintArea.firstChild);
+      }
+      const newCanvas = document.createElement("canvas");
+      newCanvas.id = "canvas";
+      newCanvas.width = 1920;
+      newCanvas.height = 1080;
+      newCanvas.style.display = "block";
+      newCanvas.style.borderRadius = "8px";
+      newCanvas.style.border = "1px solid #e0e0e0";
+      newCanvas.style.background = "#fff";
+      newCanvas.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)";
+      paintArea.appendChild(newCanvas);
+      return newCanvas;
+    }
+
+    // Helper to clear paint area and create a DOM container
+    function resetDomContainer() {
+      const paintArea = document.getElementById("paint-area");
+      // Remove all children (DOM and canvas)
+      while (paintArea.firstChild) {
+        paintArea.removeChild(paintArea.firstChild);
+      }
+      const domContainer = document.createElement("div");
+      domContainer.id = "dom-container";
+      domContainer.style.position = "relative";
+      domContainer.style.width = "1920px";
+      domContainer.style.height = "1080px";
+      domContainer.style.background = "#fff";
+      domContainer.style.borderRadius = "8px";
+      domContainer.style.border = "1px solid #e0e0e0";
+      domContainer.style.boxShadow = "0 2px 12px rgba(0,0,0,0.04)";
+      domContainer.style.overflow = "hidden";
+      paintArea.appendChild(domContainer);
+      return domContainer;
+    }
+
+    // Show available CPU cores
+    document.getElementById("cpu-count").textContent = navigator.hardwareConcurrency || "N/A";
+    const domContainer = document.getElementById("dom-container");
+
+    // DOM benchmark (10k animated divs)
+    function runDom() {
+      const domContainer = resetDomContainer(); // Only one area visible
+      const t0 = performance.now();
+      for (let i = 0; i < 10000; i++) {
+        const div = document.createElement("div");
+        div.style.left = (Math.random() * 1920) + "px";
+        div.style.top = (Math.random() * 1080) + "px";
+        domContainer.appendChild(div);
+      }
+      let angle = 0;
+      function animate() {
+        if (angle === 0) {
+          const t1 = performance.now();
+          document.getElementById("perf-dom").textContent = (t1 - t0).toFixed(2);
+        }
+        angle += 0.05;
+        [...domContainer.children].forEach((div, i) => {
+          const x = (i % 100) * 19 + Math.sin(angle + i) * 10;
+          const y = Math.floor(i / 100) * 11 + Math.cos(angle + i) * 10;
+          div.style.transform = `translate(${x}px, ${y}px)`;
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    // Canvas benchmark (main thread)
+    function runCanvas() {
+      const canvas = resetCanvas(); // Only one area visible
+      const t0 = performance.now();
+      const ctx = canvas.getContext("2d");
+      let angle = 0;
+      function animate() {
+        if (angle === 0) {
+          const t1 = performance.now();
+          document.getElementById("perf-canvas").textContent = (t1 - t0).toFixed(2);
+        }
+        angle += 0.05;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < 10000; i++) {
+          const x = (i % 100) * 19 + Math.sin(angle + i) * 10;
+          const y = Math.floor(i / 100) * 11 + Math.cos(angle + i) * 10;
+          ctx.fillStyle = "#0078d4";
+          ctx.fillRect(x, y, 5, 5);
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    // OffscreenCanvas benchmark (Worker)
+    function runWorker() {
+      const canvas = resetCanvas(); // Only one area visible
+      if (!window.OffscreenCanvas) {
+        alert("Your browser does not support OffscreenCanvas 😢");
+        return;
+      }
+      const t0 = performance.now();
+      const offscreen = canvas.transferControlToOffscreen();
+      const worker = new Worker(URL.createObjectURL(new Blob([`
+        onmessage = (e) => {
+          const canvas = e.data;
+          const ctx = canvas.getContext("2d");
+          let angle = 0;
+          function animate() {
+            if (angle === 0) {
+              postMessage('first-frame');
+            }
+            angle += 0.05;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < 10000; i++) {
+              const x = (i % 100) * 19 + Math.sin(angle + i) * 10;
+              const y = Math.floor(i / 100) * 11 + Math.cos(angle + i) * 10;
+              ctx.fillStyle = "#43a047";
+              ctx.fillRect(x, y, 5, 5);
+            }
+            requestAnimationFrame(animate);
+          }
+          animate();
+        };
+      `], { type: "application/javascript" })));
+
+      worker.onmessage = function(e) {
+        if (e.data === 'first-frame') {
+          const t1 = performance.now();
+          document.getElementById("perf-worker").textContent = (t1 - t0).toFixed(2);
+        }
+      };
+      worker.postMessage(offscreen, [offscreen]);
+    }
+  </script>
+</body>
+</html>

@@ -1,9 +1,13 @@
 export default class Stage {
   constructor(container, width, height) {
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = width;
-    this.canvas.height = height;
-    this.ctx = this.canvas.getContext('2d');
+  this.canvas = document.createElement('canvas');
+  this.canvas.width = width;
+  this.canvas.height = height;
+  this.ctx = this.canvas.getContext('2d');
+  this.canvas.style.display = "block";
+  this.canvas.style.position = "absolute";
+  this.canvas.style.left = "0";
+  this.canvas.style.top = "0";
     if (typeof container === 'string') {
       document.getElementById(container)?.appendChild(this.canvas);
     } else if (container instanceof HTMLElement) {

@@ -1,16 +1,12 @@
-import Shape from './shape.js';
+import Shape from "./shape.js";
 
 export default class Container extends Shape {
   constructor(props = {}) {
     super();
-    // Suporta tanto chamada antiga quanto props objeto
-    if (typeof props === 'object' && props !== null) {
-      this.x = props.x ?? 0;
-      this.y = props.y ?? 0;
-    } else {
-      this.x = arguments[0] ?? 0;
-      this.y = arguments[1] ?? 0;
-    }
+    this.x = props.x ?? 0;
+    this.y = props.y ?? 0;
+    this.width = props.width ?? 0;
+    this.height = props.height ?? 0;
     this.children = [];
   }
 
@@ -28,12 +24,17 @@ export default class Container extends Shape {
 
   update() {
     for (const child of this.children) {
-      if (child.tweens) child.tweens.forEach(t => t.update());
-      child.tweens = child.tweens.filter(t => !t.finished);
+      if (child.tweens) child.tweens.forEach((t) => t.update());
+      child.tweens = child.tweens.filter((t) => !t.finished);
     }
   }
 
-  isInside(x, y) {
-    return this.children.some(child => child.isInside(x - this.x, y - this.y));
+  isInside(px, py) {
+    return (
+      px >= this.x &&
+      px <= this.x + this.width &&
+      py >= this.y &&
+      py <= this.y + this.height
+    );
   }
 }

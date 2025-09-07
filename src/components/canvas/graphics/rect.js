@@ -1,22 +1,11 @@
 import Shape from "./shape.js";
+import Container from "./container.js";
 
-export default class Rect extends Shape {
+export default class Rect extends Container {
   constructor(props = {}) {
-    super();
-    if (typeof props === "object" && props !== null) {
-      this.x = props.x ?? 0;
-      this.y = props.y ?? 0;
-      this.width = props.width ?? 0;
-      this.height = props.height ?? 0;
-      this.color = props.fill ?? props.color ?? "#000";
-      this.borderRadius = props.borderRadius;
-    } else {
-      this.x = arguments[0] ?? 0;
-      this.y = arguments[1] ?? 0;
-      this.width = arguments[2] ?? 0;
-      this.height = arguments[3] ?? 0;
-      this.color = arguments[4] ?? "#000";
-    }
+    super(props);
+    this.color = props.fill ?? props.color ?? "#000";
+    this.borderRadius = props.borderRadius;
   }
 
   draw(ctx) {
@@ -53,14 +42,5 @@ export default class Rect extends Shape {
     } else {
       ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-  }
-
-  isInside(px, py) {
-    return (
-      px >= this.x &&
-      px <= this.x + this.width &&
-      py >= this.y &&
-      py <= this.y + this.height
-    );
   }
 }
