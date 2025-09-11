@@ -18,13 +18,15 @@ export default class Text extends Container {
     ctx.fillText(this.text, this.x, this.y);
   }
 
-
-
   // Método auxiliar para obter as métricas do texto
   getTextMetrics() {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     ctx.font = this.font;
     return ctx.measureText(this.text);
+  }
+
+  render() {
+    return this;
   }
 }

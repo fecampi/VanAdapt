@@ -1,13 +1,15 @@
 import Shape from "./shape.js";
 
 export default class Container extends Shape {
-  constructor(props = {}) {
+  constructor(props = {}, ...children) {
     super();
     this.x = props.x ?? 0;
     this.y = props.y ?? 0;
     this.width = props.width ?? 0;
     this.height = props.height ?? 0;
     this.children = [];
+    // Adiciona os elementos filhos recebidos no construtor
+    children.forEach(child => this.add(child));
   }
 
   add(shape) {
@@ -36,5 +38,9 @@ export default class Container extends Shape {
       py >= this.y &&
       py <= this.y + this.height
     );
+  }
+
+  render() {
+    return this;
   }
 }
