@@ -3,8 +3,9 @@ import { Easing } from './easing.js';
 export default class Shape {
   constructor() {
     this.onClick = null;
-    this.layer = null;
+    this.stage = null;
     this.tweens = [];
+    this.focusable = false; // Por padrão, shapes não são focáveis
   }
 
   tween(props, duration = 1000, easing = 'linear') {
@@ -31,5 +32,13 @@ export default class Shape {
       }
     };
     this.tweens.push(tween);
+  }
+
+  update() {
+    // Atualiza todos os tweens deste shape
+    this.tweens = this.tweens.filter((tween) => {
+      tween.update();
+      return !tween.finished;
+    });
   }
 }

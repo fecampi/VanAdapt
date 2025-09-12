@@ -9,7 +9,8 @@ export default class Container extends Shape {
     this.height = props.height ?? 0;
     this.children = [];
     // Adiciona os elementos filhos recebidos no construtor
-    children.forEach(child => this.add(child));
+    children.forEach((child) => this.add(child));
+    this.onClick = props.onClick;
   }
 
   add(shape) {
@@ -25,9 +26,12 @@ export default class Container extends Shape {
   }
 
   update() {
+    // Atualiza os tweens deste container
+    super.update();
+    
+    // Atualiza todos os filhos
     for (const child of this.children) {
-      if (child.tweens) child.tweens.forEach((t) => t.update());
-      child.tweens = child.tweens.filter((t) => !t.finished);
+      if (child.update) child.update();
     }
   }
 
@@ -38,6 +42,29 @@ export default class Container extends Shape {
       py >= this.y &&
       py <= this.y + this.height
     );
+  }
+
+  handleClick(x, y) {
+    // Primeiro verifica se o clique está dentro do container
+    if (!this.isInside(x, y)) {
+      return;
+    }
+
+    // Converte as coordenadas para o espaço local do container
+    const localX = x - this.x;
+    const localY = y - this.y;
+
+    // Propaga o clique para os filhos
+    for (const child of this.children) {
+      if (child.handleClick) {
+        child.handleClick(localX, localY);
+      }
+    }
+
+    // Se tem um handler de clique próprio, executa
+    if (this.onClick) {
+      this.onClick();
+    }
   }
 
   render() {

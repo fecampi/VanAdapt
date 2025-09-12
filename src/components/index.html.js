@@ -1,6 +1,7 @@
 import van from "vanjs-core";
 const { tags } = van;
 import ButtonHtml from "./html/ButtonHtml.js";
+import FocusableHtml from "./html/FocusableHtml.js";
 
 const create =
   (C) =>
@@ -8,6 +9,8 @@ const create =
     new C(...args).render();
 
 export const Button = create(ButtonHtml);
+
+export const Focusable = create(FocusableHtml);
 
 export const View = (...args) => tags.div(...args);
 
@@ -22,18 +25,45 @@ export function Text({
   font = "16px Arial",
   align = "center",
   baseline = "middle",
+  verticalAlign,
   ...props
 } = {}) {
+  let positionStyle = "";
+  if (baseline === "middle" || verticalAlign === "middle") {
+    if (align === "center") {
+      // Centralizar tanto horizontal quanto verticalmente
+      positionStyle = `
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      `;
+    } else {
+      positionStyle = `
+        left: ${x}px;
+        top: 50%;
+        transform: translateY(-50%);
+      `;
+    }
+  } else if (baseline === "bottom" || verticalAlign === "bottom") {
+    positionStyle = `
+      left: ${x}px;
+      bottom: 0;
+    `;
+  } else {
+    positionStyle = `
+      left: ${x}px;
+      top: ${y}px;
+    `;
+  }
+
   return tags.span(
     {
       style: `
       position: absolute;
-      left: ${x}px;
-      top: ${y}px;
+      ${positionStyle}
       color: ${color};
       font: ${font};
       text-align: ${align};
-      vertical-align: ${baseline};
       ${props.style ?? ""}
     `,
       ...props,
@@ -112,4 +142,6 @@ export function Container(
     },
     ...children
   );
+
+  
 }

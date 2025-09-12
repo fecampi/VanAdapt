@@ -13,7 +13,7 @@ export default class Stage {
     } else if (container instanceof HTMLElement) {
       container.appendChild(this.canvas);
     }
-    this.layers = [];
+    this.shapes = [];
     this.canvas.addEventListener('click', e => this.handleClick(e));
     this.animating = false;
     this.fps = 60; // padrão
@@ -22,17 +22,17 @@ export default class Stage {
     this.currentFPS = 0;
   }
 
-  add(layer) {
-    this.layers.push(layer);
-    layer.stage = this;
+  add(shape) {
+    this.shapes.push(shape);
+    shape.stage = this;
     this.draw();
   }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Desenhar layers
-    for (const layer of this.layers) layer.draw(this.ctx);
+    // Desenhar shapes
+    for (const shape of this.shapes) shape.draw(this.ctx);
 
     // Desenhar FPS se ativo
     if (this.showFPS) {
@@ -48,7 +48,9 @@ export default class Stage {
     const rect = this.canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    for (const layer of this.layers) layer.handleClick(x, y);
+    for (const shape of this.shapes) {
+      if (shape.handleClick) shape.handleClick(x, y);
+    }
   }
 
   setFPS(fps) {
@@ -74,7 +76,9 @@ export default class Stage {
           this.currentFPS = 1000 / delta;
 
           this.draw();
-          for (const layer of this.layers) layer.update();
+          for (const shape of this.shapes) {
+            if (shape.update) shape.update();
+          }
         }
         requestAnimationFrame(loop);
       };

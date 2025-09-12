@@ -1,8 +1,8 @@
 import Container from "./container.js";
 
 export default class Rect extends Container {
-  constructor(props = {}) {
-    super(props);
+  constructor(props = {}, ...children) {
+    super(props, ...children);
     this.color = props.fill ?? props.color ?? "#000";
     this.borderRadius = props.borderRadius;
   }
@@ -10,6 +10,8 @@ export default class Rect extends Container {
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
+    
+    // Desenha o retângulo
     ctx.fillStyle = this.color;
     if (this.borderRadius && this.borderRadius > 0) {
       const r = Math.min(this.borderRadius, this.width / 2, this.height / 2);
@@ -28,8 +30,10 @@ export default class Rect extends Container {
     } else {
       ctx.fillRect(0, 0, this.width, this.height);
     }
-    // Desenha os filhos (ex: Text)
-    super.draw(ctx);
+    
+    // Desenha os filhos (ex: Text) - sem translação extra
+    for (const child of this.children) child.draw(ctx);
+    
     ctx.restore();
   }
 }

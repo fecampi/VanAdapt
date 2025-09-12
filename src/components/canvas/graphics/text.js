@@ -26,6 +26,15 @@ export default class Text extends Container {
     return ctx.measureText(this.text);
   }
 
+  handleClick(x, y) {
+    // Para texto, não verificamos área clicável - o container pai já fez isso
+    if (this.onClick) {
+      this.onClick();
+      return true; // Consumiu o clique
+    }
+    return false; // Não consumiu o clique
+  }
+
   render() {
     return this;
   }

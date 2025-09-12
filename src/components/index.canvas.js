@@ -1,10 +1,10 @@
 import ViewCanvas from "./canvas/ViewCanvas.js";
-import Button2 from "./canvas/ButtonCanvas.js";
 import StateCanvas from "./canvas/State.js";
 import TextComponent from "./canvas/graphics/text.js";
 import RectComponent from "./canvas/graphics/rect.js";
 import CircleComponent from "./canvas/graphics/circle.js";
 import ContainerComponent from "./canvas/graphics/container.js";
+import FocusableComponent from "./canvas/graphics/focusable.js";
 
 export const View = (props, ...children) => {
   const viewCanvas = new ViewCanvas(props);
@@ -12,9 +12,6 @@ export const View = (props, ...children) => {
   return viewCanvas.render();
 };
 
-export function Button(props = {}) {
-  return new Button2(props);
-}
 
 export function state(props) {
   return new StateCanvas(props);
@@ -29,7 +26,8 @@ function createReactiveInstance(ClassRef, props = {}, ...children) {
       val.subscribe((newVal) => {
         instance[key] = newVal;
       });
-    } else {
+    } else if (!(key in instance)) {
+      // Só define a propriedade se ela não existir na instância
       instance[key] = val;
     }
   });
@@ -41,8 +39,8 @@ export function Text(props = {}) {
   return createReactiveInstance(TextComponent, props);
 }
 
-export function Rect(props = {}) {
-  return createReactiveInstance(RectComponent, props);
+export function Rect(props = {}, ...children) {
+  return createReactiveInstance(RectComponent, props, ...children);
 }
 
 export function Circle(props = {}) {
@@ -52,4 +50,8 @@ export function Circle(props = {}) {
 // Agora Container aceita filhos diretamente!
 export function Container(props = {}, ...children) {
   return createReactiveInstance(ContainerComponent, props, ...children);
+}
+
+export function Focusable(props = {}, ...children) {
+  return createReactiveInstance(FocusableComponent, props, ...children);
 }
