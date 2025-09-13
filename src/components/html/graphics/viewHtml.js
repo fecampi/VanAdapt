@@ -2,7 +2,7 @@ import van from "vanjs-core";
 const { tags } = van;
 const { div } = tags;
 
-export default class FocusableHtml {
+export default class viewHtml {
   constructor({
     onClick,
     x = 0,

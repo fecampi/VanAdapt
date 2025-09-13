@@ -1,5 +1,5 @@
 // Botão DOM
-import { View, state, Text, Focusable } from "components";
+import { View, state, Text } from "components";
 
 // Constantes de estilo
 const COLORS = {
@@ -41,30 +41,31 @@ export default class App {
 
   render() {
     return View(
-      { width: 500, height: 500 },
-
-      Focusable(
+      { width: 1280, height: 720 },
+      View(
         {
           ...BUTTON,
           y: 100,
           color: COLORS.success,
           onClick: this.handleIncrement,
+          View: true,
         },
         Text({ ...TEXT, text: "increment" })
       ),
 
-      Focusable(
+      View(
         {
           ...BUTTON,
           y: 200,
           color: COLORS.primary,
           onClick: this.handleDecrement,
+          View: true,
         },
         Text({ ...TEXT, text: "decrement" })
       ),
 
-      Focusable(
-        { ...BUTTON, y: 300, color: COLORS.warning },
+      View(
+        { ...BUTTON, y: 300, color: COLORS.warning, View: false },
         Text({ ...TEXT, text: this.text })
       )
     );

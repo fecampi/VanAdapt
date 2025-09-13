@@ -1,25 +1,28 @@
+import CanvasInteractionManager from "./interactionManager.js";
+
 export default class Stage {
   constructor(container, width, height) {
-  this.canvas = document.createElement('canvas');
-  this.canvas.width = width;
-  this.canvas.height = height;
-  this.ctx = this.canvas.getContext('2d');
-  this.canvas.style.display = "block";
-  this.canvas.style.position = "absolute";
-  this.canvas.style.left = "0";
-  this.canvas.style.top = "0";
-    if (typeof container === 'string') {
+    this.canvas = document.createElement("canvas");
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.ctx = this.canvas.getContext("2d");
+    this.canvas.style.display = "block";
+    this.canvas.style.position = "absolute";
+    this.canvas.style.left = "0";
+    this.canvas.style.top = "0";
+    if (typeof container === "string") {
       document.getElementById(container)?.appendChild(this.canvas);
     } else if (container instanceof HTMLElement) {
       container.appendChild(this.canvas);
     }
     this.shapes = [];
-    this.canvas.addEventListener('click', e => this.handleClick(e));
     this.animating = false;
     this.fps = 60; // padrão
-    this.showFPS = true; 
+    this.showFPS = true;
     this.lastFrameTime = performance.now();
     this.currentFPS = 0;
+    this.interactionManager = new CanvasInteractionManager(this.canvas, this.shapes);
+    console.log("Canvas Stage initialized", this.shapes);
   }
 
   add(shape) {
@@ -44,14 +47,6 @@ export default class Stage {
     }
   }
 
-  handleClick(e) {
-    const rect = this.canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    for (const shape of this.shapes) {
-      if (shape.handleClick) shape.handleClick(x, y);
-    }
-  }
 
   setFPS(fps) {
     this.fps = fps;

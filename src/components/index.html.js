@@ -1,18 +1,17 @@
 import van from "vanjs-core";
 const { tags } = van;
-import ButtonHtml from "./html/ButtonHtml.js";
-import FocusableHtml from "./html/FocusableHtml.js";
+
+import ViewHtml from "../components/html/graphics/viewHtml.js";
 
 const create =
   (C) =>
   (...args) =>
     new C(...args).render();
 
-export const Button = create(ButtonHtml);
 
-export const Focusable = create(FocusableHtml);
+export const View = create(ViewHtml);
 
-export const View = (...args) => tags.div(...args);
+
 
 export const state = (...args) => van.state(...args);
 

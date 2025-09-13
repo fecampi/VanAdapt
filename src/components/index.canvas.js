@@ -1,16 +1,9 @@
-import ViewCanvas from "./canvas/ViewCanvas.js";
 import StateCanvas from "./canvas/State.js";
 import TextComponent from "./canvas/graphics/text.js";
 import RectComponent from "./canvas/graphics/rect.js";
 import CircleComponent from "./canvas/graphics/circle.js";
 import ContainerComponent from "./canvas/graphics/container.js";
-import FocusableComponent from "./canvas/graphics/focusable.js";
-
-export const View = (props, ...children) => {
-  const viewCanvas = new ViewCanvas(props);
-  viewCanvas.add(...children.map((el) => el.render()));
-  return viewCanvas.render();
-};
+import ViewComponent from "./canvas/graphics/view.js";
 
 
 export function state(props) {
@@ -52,6 +45,6 @@ export function Container(props = {}, ...children) {
   return createReactiveInstance(ContainerComponent, props, ...children);
 }
 
-export function Focusable(props = {}, ...children) {
-  return createReactiveInstance(FocusableComponent, props, ...children);
+export function View(props = {}, ...children) {
+  return createReactiveInstance(ViewComponent, props, ...children);
 }

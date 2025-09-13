@@ -4,6 +4,7 @@ export default class Focusable extends Rect {
   constructor(props = {}, ...children) {
     super(props, ...children);
     this.onClick = props.onClick;
+    this.focusable = props.focusable ?? true;
   }
 
   isInside(px, py) {
