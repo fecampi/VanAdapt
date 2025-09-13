@@ -12,7 +12,8 @@ export default defineConfig(({ mode }) => {
     build: {
       rollupOptions: {
         input: {
-          main: resolve(__dirname, 'src/main.ts')
+          main: resolve(__dirname, 'src/main.ts'),
+          html: resolve(__dirname, 'index.html')
         },
         output: {
           entryFileNames: isCanvasBuild
