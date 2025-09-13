@@ -1,9 +1,12 @@
-import van from "vanjs-core"
-import App from "./App.jsx"
+import { renderDOM } from "./renderers/dom.js"
+import { renderCanvas } from "./renderers/canvas.js"
 
-// Monta o componente App dentro da div #app do index.html
-const appEl = document.getElementById("app")
-if (appEl) {
-  const appInstance = new App()
-  van.add(appEl, appInstance.render())
+// Detecta o modo baseado na variável de ambiente do Vite
+const isCanvasMode = import.meta.env.MODE === 'canvas'
+
+// Bootstrap da aplicação - carrega o renderer apropriado
+if (isCanvasMode) {
+  renderCanvas()
+} else {
+  renderDOM()
 }
