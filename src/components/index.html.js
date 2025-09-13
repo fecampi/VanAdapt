@@ -2,6 +2,7 @@ import van from "vanjs-core";
 const { tags } = van;
 
 import ViewHtml from "../components/html/graphics/viewHtml.js";
+import ImageHtml from "../components/html/graphics/ImageHtml.js";
 
 const create =
   (C) =>
@@ -10,6 +11,7 @@ const create =
 
 
 export const View = create(ViewHtml);
+export const Image = create(ImageHtml);
 
 
 

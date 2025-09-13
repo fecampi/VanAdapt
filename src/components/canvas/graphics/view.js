@@ -1,10 +1,14 @@
 import Rect from "./rect.js";
 
-export default class Focusable extends Rect {
+export default class View extends Rect {
   constructor(props = {}, ...children) {
     super(props, ...children);
-    this.onClick = props.onClick;
-    this.focusable = props.focusable ?? true;
+    this.onPress = props.onPress;
+    this.onFocus = props.onFocus;
+    this.onBlur = props.onBlur;
+    this.onMouseEnter = props.onMouseEnter;
+    this.onMouseLeave = props.onMouseLeave;
+    this.focusable = props.focusable ?? false;
   }
 
   isInside(px, py) {
@@ -16,14 +20,16 @@ export default class Focusable extends Rect {
     );
   }
 
-  handleClick(x, y) {
+  handlePress(x, y) {
     // Primeiro verifica se o clique está dentro do container
     if (!this.isInside(x, y)) {
       return;
     }
-    // Se tem um handler de clique próprio, executa
-    if (this.onClick) {
-      this.onClick();
+    // Se tem um handler de press próprio, executa
+    if (this.onPress) {
+      // Criar evento padronizado para consistência com HTML
+      const event = { target: this, type: 'press' };
+      this.onPress(event);
     }
   }
 }

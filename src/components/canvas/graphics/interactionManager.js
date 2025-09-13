@@ -6,15 +6,15 @@ export default class CanvasInteractionManager {
   }
 
   _bindEvents() {
-    this.canvas.addEventListener("click", (e) => this.handleClick(e));
+    this.canvas.addEventListener("click", (e) => this.handlePress(e));
     this.canvas.addEventListener("mousemove", (e) => this.handleMouseMove(e));
   }
 
-  handleClick(e) {
+  handlePress(e) {
     const rect = this.canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    console.log(`[InteractionManager] Click at x:${x} y:${y}`);
+    // console.log(`[CanvasInteractionManager] Press at x:${x} y:${y}`);
     for (const shape of this.shapes) {
       this.propagateFocusable(shape, x, y);
     }
@@ -25,16 +25,24 @@ export default class CanvasInteractionManager {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     function propagateHover(shape) {
-      if (shape.constructor?.name === "Focusable" && shape.focusable === true) {
+      if (shape.constructor?.name === "View" && shape.focusable === true) {
         const inside = shape.isInside && shape.isInside(x, y);
         if (inside && !shape.hovered) {
           shape.hovered = true;
-          console.log(`[InteractionManager] Mouse entered:`, shape);
-          if (typeof shape.onMouseEnter === "function") shape.onMouseEnter();
+          // console.log(`[CanvasInteractionManager] Mouse entered:`, shape);
+          if (typeof shape.onFocus === "function") {
+            // Criar evento padronizado para consistência com HTML
+            const event = { target: shape, type: 'mouseenter' };
+            shape.onFocus(event);
+          }
         } else if (!inside && shape.hovered) {
           shape.hovered = false;
-          console.log(`[InteractionManager] Mouse left:`, shape);
-          if (typeof shape.onMouseLeave === "function") shape.onMouseLeave();
+          // console.log(`[CanvasInteractionManager] Mouse left:`, shape);
+          if (typeof shape.onBlur === "function") {
+            // Criar evento padronizado para consistência com HTML
+            const event = { target: shape, type: 'mouseleave' };
+            shape.onBlur(event);
+          }
         }
       }
       if (shape.children) {
@@ -48,14 +56,14 @@ export default class CanvasInteractionManager {
 
   propagateFocusable(shape, x, y) {
     if (
-      shape.constructor?.name === "Focusable" &&
+      shape.constructor?.name === "View" &&
       shape.focusable === true &&
-      typeof shape.onClick === "function"
+      typeof shape.onPress === "function"
     ) {
-      console.log(`[InteractionManager] Testing Focusable:`, shape, `at x:${x} y:${y}`);
+      // console.log(`[CanvasInteractionManager] Testing Focusable:`, shape, `at x:${x} y:${y}`);
       if (shape.isInside && shape.isInside(x, y)) {
-        console.log(`[InteractionManager] Focusable clicked!`, shape);
-        shape.handleClick(x, y);
+        // console.log(`[CanvasInteractionManager] Focusable pressed!`, shape);
+        shape.handlePress(x, y);
       }
     }
     if (shape.children) {
